@@ -168,7 +168,7 @@ new file mode 100644
 index 0000000..1b31397
 --- /dev/null
 +++ b/cmake/DDSCollectWNPkgFiles.cmake
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,31 @@
 +# Copyright 2017-2020 GSI, Inc. All rights reserved.
 +#
 +#
@@ -177,10 +177,17 @@ index 0000000..1b31397
 +## Collect WN PKG files
 +###################################################
 +
++# Filter non-existant libraries:
++#  /usr/lib/libc++.1.dylib
++#  /usr/lib/libSystem.B.dylib
++# They're referenced in executables, but not findable by cmake
++list(APPEND pre_exclude_regex "^/usr/lib/lib(c[+][+][.]1|System[.]B)[.]dylib$")
++
 +# Collect non-system dependencies
 +file(GET_RUNTIME_DEPENDENCIES
 +  RESOLVED_DEPENDENCIES_VAR deps
-+  EXECUTABLES ${EXECUTABLES} )
++  EXECUTABLES ${EXECUTABLES}
++  PRE_EXCLUDE_REGEXES "${pre_exclude_regex}")
 +
 +# Generate regex that excludes system prefixes
 +list(JOIN EXCLUDED_SYSTEM_PREFIXES "|" excluded_system_prefix_regex)
